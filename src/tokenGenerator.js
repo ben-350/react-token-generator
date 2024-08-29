@@ -5,7 +5,7 @@ import {
   Button,
   Grid,
   Typography,
-  Box,
+  Paper,
 } from '@mui/material';
 
 function TokenGenerator() {
@@ -20,12 +20,10 @@ function TokenGenerator() {
   const handleGenerate = () => {
     const newTokens = [];
 
-    // Generate Blue Tokens
     for (let i = 1; i <= blueTokens; i++) {
       newTokens.push({ color: 'blue', label: `${bluePrefix}${i}` });
     }
 
-    // Generate Red Tokens
     for (let i = 1; i <= redTokens; i++) {
       newTokens.push({ color: 'red', label: `${redPrefix}${i}` });
     }
@@ -44,95 +42,150 @@ function TokenGenerator() {
   };
 
   return (
-    <Container maxWidth="sm" style={{ textAlign: 'center', marginTop: '50px' }}>
-      <Typography variant="h6" gutterBottom>
+    <Container maxWidth="sm" sx={{ textAlign: 'center', marginTop: 4 }}>
+      <Typography variant="h5" gutterBottom>
         Token Generator App
       </Typography>
 
-      <TextField
-        label="Number of Blue Tokens"
-        type="number"
-        fullWidth
-        margin="normal"
-        value={blueTokens}
-        onChange={(e) => setBlueTokens(Number(e.target.value))}
-      />
-      <TextField
-        label="Blue Token Prefix"
-        fullWidth
-        margin="normal"
-        value={bluePrefix}
-        onChange={(e) => setBluePrefix(e.target.value)}
-      />
-      <TextField
-        label="Blue Tokens per Row"
-        type="number"
-        fullWidth
-        margin="normal"
-        value={bluePerRow}
-        onChange={(e) => setBluePerRow(Number(e.target.value))}
-      />
-
-      <TextField
-        label="Number of Red Tokens"
-        type="number"
-        fullWidth
-        margin="normal"
-        value={redTokens}
-        onChange={(e) => setRedTokens(Number(e.target.value))}
-      />
-      <TextField
-        label="Red Token Prefix"
-        fullWidth
-        margin="normal"
-        value={redPrefix}
-        onChange={(e) => setRedPrefix(e.target.value)}
-      />
-      <TextField
-        label="Red Tokens per Row"
-        type="number"
-        fullWidth
-        margin="normal"
-        value={redPerRow}
-        onChange={(e) => setRedPerRow(Number(e.target.value))}
-      />
-
-<Button variant="contained" onClick={handleGenerate} style={{ marginRight: '10px', backgroundColor: 'lightgray', color:'black',  border: '2px solid black', textTransform: 'none' }}>
-  Generate
-</Button>
-<Button variant="contained" onClick={handleClear} style={{ backgroundColor: 'lightgray', color:'black',  border: '2px solid black', textTransform: 'none'}}>
-  Clear
-</Button>
-
-
-      <Grid container spacing={2} style={{ marginTop: '20px' }}>
-        {tokens.map((token, index) => (
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            md={Math.floor(12 / (token.color === 'blue' ? bluePerRow : redPerRow))}
-            key={index}
-          >
-            <Box
-              style={{
-                backgroundColor: token.color,
-                color: '#000',
-                padding: '10px',
-                textAlign: 'center',
-                borderRadius: '4px',
-                width: '100px', // Set width for square shape
-                height: '100px', // Set height equal to width
-                display: 'flex', // Center content horizontally and vertically
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              {token.label}
-            </Box>
+      {/* Blue Tokens Inputs */}
+      {['Number of Blue Tokens', 'Blue Token Prefix', 'Blue Tokens per Row'].map((label, index) => (
+        <Grid container spacing={2} alignItems="center" sx={{ margin: 1 }} key={index}>
+          <Grid item xs={12} sm={4}>
+            <Typography variant="body1">{label}:</Typography>
           </Grid>
-        ))}
-      </Grid>
+          <Grid item xs={12} sm={8}>
+            <TextField
+              type={label.includes('Number') ? 'number' : 'text'}
+              fullWidth
+              value={label.includes('Number of Blue Tokens') ? blueTokens : label.includes('Blue Token Prefix') ? bluePrefix : bluePerRow}
+              onChange={(e) => {
+                if (label.includes('Number of Blue Tokens')) setBlueTokens(Number(e.target.value));
+                if (label.includes('Blue Token Prefix')) setBluePrefix(e.target.value);
+                if (label.includes('Blue Tokens per Row')) setBluePerRow(Number(e.target.value));
+              }}
+            />
+          </Grid>
+        </Grid>
+      ))}
+
+      {/* Red Tokens Inputs */}
+      {['Number of Red Tokens', 'Red Token Prefix', 'Red Tokens per Row'].map((label, index) => (
+        <Grid container spacing={2} alignItems="center" sx={{ margin: 1 }} key={index}>
+          <Grid item xs={12} sm={4}>
+            <Typography variant="body1">{label}:</Typography>
+          </Grid>
+          <Grid item xs={12} sm={8}>
+            <TextField
+              type={label.includes('Number') ? 'number' : 'text'}
+              fullWidth
+              value={label.includes('Number of Red Tokens') ? redTokens : label.includes('Red Token Prefix') ? redPrefix : redPerRow}
+              onChange={(e) => {
+                if (label.includes('Number of Red Tokens')) setRedTokens(Number(e.target.value));
+                if (label.includes('Red Token Prefix')) setRedPrefix(e.target.value);
+                if (label.includes('Red Tokens per Row')) setRedPerRow(Number(e.target.value));
+              }}
+            />
+          </Grid>
+        </Grid>
+      ))}
+
+      <Button
+        variant="contained"
+        onClick={handleGenerate}
+        sx={{
+          margin: 1,
+          backgroundColor: 'grey.300',
+          color: 'text.primary',
+          border: 2,
+          borderColor: 'text.primary',
+          textTransform: 'none',
+        }}
+      >
+        Generate
+      </Button>
+      <Button
+        variant="contained"
+        onClick={handleClear}
+        sx={{
+          margin: 1,
+          backgroundColor: 'grey.300',
+          color: 'text.primary',
+          border: 2,
+          borderColor: 'text.primary',
+          textTransform: 'none',
+        }}
+      >
+        Clear
+      </Button>
+
+      <Grid container spacing={2} sx={{ marginTop: 2, marginBottom: 2, justifyContent: { xs: 'center', sm: 'flex-start' } }}>
+  {tokens.filter(token => token.color === 'blue').map((token, index) => (
+    <Grid
+      item
+      xs="auto" 
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+      key={index}
+    >
+      <Paper
+        sx={{
+          backgroundColor: token.color,
+          color: '#000',
+          padding: 2,
+          textAlign: 'center',
+          borderRadius: '8px', 
+          width: '100px', 
+          height: '100px', 
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          border: '1px solid #fff',
+          boxSizing: 'border-box', 
+        }}
+      >
+        {token.label}
+      </Paper>
+    </Grid>
+  ))}
+</Grid>
+
+<Grid container spacing={2} sx={{ marginTop: 2, marginBottom: 2, justifyContent: { xs: 'center', sm: 'flex-start' } }}>
+  {tokens.filter(token => token.color === 'red').map((token, index) => (
+    <Grid
+      item
+      xs="auto" 
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+      key={index}
+    >
+      <Paper
+        sx={{
+          backgroundColor: token.color,
+          color: '#000',
+          padding: 2,
+          textAlign: 'center',
+          borderRadius: '8px',
+          width: '100px', 
+          height: '100px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          border: '1px solid #fff',
+          boxSizing: 'border-box', 
+        }}
+      >
+        {token.label}
+      </Paper>
+    </Grid>
+  ))}
+</Grid>
+
     </Container>
   );
 }
