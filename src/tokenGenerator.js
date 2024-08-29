@@ -10,25 +10,43 @@ import {
 
 function TokenGenerator() {
   const [blueTokens, setBlueTokens] = useState(0);
-  const [bluePrefix, setBluePrefix] = useState('');
+  const [bluePrefix, setBluePrefix] = useState('A');
   const [bluePerRow, setBluePerRow] = useState(0);
   const [redTokens, setRedTokens] = useState(0);
-  const [redPrefix, setRedPrefix] = useState('');
+  const [redPrefix, setRedPrefix] = useState('B');
   const [redPerRow, setRedPerRow] = useState(0);
   const [tokens, setTokens] = useState([]);
 
+  // Function to handle numeric input validation
+  const handleNumberInput = (setter) => (e) => {
+    const value = e.target.value;
+    // Check if value is empty or a valid number
+    if (value === '' || /^\d*$/.test(value)) {
+      setter(Number(value) || 0);
+    }
+  };
+
   const handleGenerate = () => {
-    const newTokens = [];
+    let blueTokensArray = [];
+    let redTokensArray = [];
 
     for (let i = 1; i <= blueTokens; i++) {
-      newTokens.push({ color: 'blue', label: `${bluePrefix}${i}` });
+      if (i % bluePerRow === 1 && i !== 1) {
+        blueTokensArray.push({ color: 'blue', label: `${bluePrefix}${i}`, newRow: true });
+      } else {
+        blueTokensArray.push({ color: 'blue', label: `${bluePrefix}${i}` });
+      }
     }
 
     for (let i = 1; i <= redTokens; i++) {
-      newTokens.push({ color: 'red', label: `${redPrefix}${i}` });
+      if (i % redPerRow === 1 && i !== 1) {
+        redTokensArray.push({ color: 'red', label: `${redPrefix}${i}`, newRow: true });
+      } else {
+        redTokensArray.push({ color: 'red', label: `${redPrefix}${i}` });
+      }
     }
 
-    setTokens(newTokens);
+    setTokens([...blueTokensArray, ...redTokensArray]);
   };
 
   const handleClear = () => {
@@ -41,6 +59,9 @@ function TokenGenerator() {
     setTokens([]);
   };
 
+  const blueTokensDisplay = tokens.filter(token => token.color === 'blue');
+  const redTokensDisplay = tokens.filter(token => token.color === 'red');
+
   return (
     <Container maxWidth="sm" sx={{ textAlign: 'center', marginTop: 4 }}>
       <Typography variant="h5" gutterBottom>
@@ -48,46 +69,86 @@ function TokenGenerator() {
       </Typography>
 
       {/* Blue Tokens Inputs */}
-      {['Number of Blue Tokens', 'Blue Token Prefix', 'Blue Tokens per Row'].map((label, index) => (
-        <Grid container spacing={2} alignItems="center" sx={{ margin: 1 }} key={index}>
-          <Grid item xs={12} sm={4}>
-            <Typography variant="body1">{label}:</Typography>
-          </Grid>
-          <Grid item xs={12} sm={8}>
-            <TextField
-              type={label.includes('Number') ? 'number' : 'text'}
-              fullWidth
-              value={label.includes('Number of Blue Tokens') ? blueTokens : label.includes('Blue Token Prefix') ? bluePrefix : bluePerRow}
-              onChange={(e) => {
-                if (label.includes('Number of Blue Tokens')) setBlueTokens(Number(e.target.value));
-                if (label.includes('Blue Token Prefix')) setBluePrefix(e.target.value);
-                if (label.includes('Blue Tokens per Row')) setBluePerRow(Number(e.target.value));
-              }}
-            />
-          </Grid>
+      <Grid container spacing={2} alignItems="center" sx={{ margin: 1 }}>
+        <Grid item xs={12} sm={4}>
+          <Typography variant="body1">No. of Blue Tokens:</Typography>
         </Grid>
-      ))}
+        <Grid item xs={12} sm={8}>
+          <TextField
+            type="text"
+            fullWidth
+            value={blueTokens}
+            onChange={handleNumberInput(setBlueTokens)}
+          />
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} alignItems="center" sx={{ margin: 1 }}>
+        <Grid item xs={12} sm={4}>
+          <Typography variant="body1">Blue Token Prefix:</Typography>
+        </Grid>
+        <Grid item xs={12} sm={8}>
+          <TextField
+            type="text"
+            fullWidth
+            value={bluePrefix}
+            onChange={(e) => setBluePrefix(e.target.value)}
+          />
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} alignItems="center" sx={{ margin: 1 }}>
+        <Grid item xs={12} sm={4}>
+          <Typography variant="body1">Blue Tokens per Row:</Typography>
+        </Grid>
+        <Grid item xs={12} sm={8}>
+          <TextField
+            type="text"
+            fullWidth
+            value={bluePerRow}
+            onChange={handleNumberInput(setBluePerRow)}
+          />
+        </Grid>
+      </Grid>
 
       {/* Red Tokens Inputs */}
-      {['Number of Red Tokens', 'Red Token Prefix', 'Red Tokens per Row'].map((label, index) => (
-        <Grid container spacing={2} alignItems="center" sx={{ margin: 1 }} key={index}>
-          <Grid item xs={12} sm={4}>
-            <Typography variant="body1">{label}:</Typography>
-          </Grid>
-          <Grid item xs={12} sm={8}>
-            <TextField
-              type={label.includes('Number') ? 'number' : 'text'}
-              fullWidth
-              value={label.includes('Number of Red Tokens') ? redTokens : label.includes('Red Token Prefix') ? redPrefix : redPerRow}
-              onChange={(e) => {
-                if (label.includes('Number of Red Tokens')) setRedTokens(Number(e.target.value));
-                if (label.includes('Red Token Prefix')) setRedPrefix(e.target.value);
-                if (label.includes('Red Tokens per Row')) setRedPerRow(Number(e.target.value));
-              }}
-            />
-          </Grid>
+      <Grid container spacing={2} alignItems="center" sx={{ margin: 1 }}>
+        <Grid item xs={12} sm={4}>
+          <Typography variant="body1">No. of Red Tokens:</Typography>
         </Grid>
-      ))}
+        <Grid item xs={12} sm={8}>
+          <TextField
+            type="text"
+            fullWidth
+            value={redTokens}
+            onChange={handleNumberInput(setRedTokens)}
+          />
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} alignItems="center" sx={{ margin: 1 }}>
+        <Grid item xs={12} sm={4}>
+          <Typography variant="body1">Red Token Prefix:</Typography>
+        </Grid>
+        <Grid item xs={12} sm={8}>
+          <TextField
+            type="text"
+            fullWidth
+            value={redPrefix}
+            onChange={(e) => setRedPrefix(e.target.value)}
+          />
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} alignItems="center" sx={{ margin: 1 }}>
+        <Grid item xs={12} sm={4}>
+          <Typography variant="body1">Red Tokens per Row:</Typography>
+        </Grid>
+        <Grid item xs={12} sm={8}>
+          <TextField
+            type="text"
+            fullWidth
+            value={redPerRow}
+            onChange={handleNumberInput(setRedPerRow)}
+          />
+        </Grid>
+      </Grid>
 
       <Button
         variant="contained"
@@ -118,74 +179,73 @@ function TokenGenerator() {
         Clear
       </Button>
 
-      <Grid container spacing={2} sx={{ marginTop: 2, marginBottom: 2, justifyContent: { xs: 'center', sm: 'flex-start' } }}>
-  {tokens.filter(token => token.color === 'blue').map((token, index) => (
-    <Grid
-      item
-      xs="auto" 
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-      key={index}
-    >
-      <Paper
-        sx={{
-          backgroundColor: token.color,
-          color: '#000',
-          padding: 2,
-          textAlign: 'center',
-          borderRadius: '8px', 
-          width: '100px', 
-          height: '100px', 
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          border: '1px solid #fff',
-          boxSizing: 'border-box', 
-        }}
-      >
-        {token.label}
-      </Paper>
-    </Grid>
-  ))}
-</Grid>
+      {/* Blue Tokens Display */}
+      <Grid container spacing={2} sx={{ marginTop: 2, marginBottom: 2 }}>
+        {blueTokensDisplay.map((token, index) => (
+          <Grid
+            item
+            xs={12 / bluePerRow}
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            key={index}
+          >
+            <Paper
+              sx={{
+                backgroundColor: token.color,
+                color: '#000',
+                padding: 2,
+                textAlign: 'center',
+                borderRadius: '8px',
+                width: '100px',
+                height: '100px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                boxSizing: 'border-box',
+              }}
+            >
+              {token.label}
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
 
-<Grid container spacing={2} sx={{ marginTop: 2, marginBottom: 2, justifyContent: { xs: 'center', sm: 'flex-start' } }}>
-  {tokens.filter(token => token.color === 'red').map((token, index) => (
-    <Grid
-      item
-      xs="auto" 
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-      key={index}
-    >
-      <Paper
-        sx={{
-          backgroundColor: token.color,
-          color: '#000',
-          padding: 2,
-          textAlign: 'center',
-          borderRadius: '8px',
-          width: '100px', 
-          height: '100px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          border: '1px solid #fff',
-          boxSizing: 'border-box', 
-        }}
-      >
-        {token.label}
-      </Paper>
-    </Grid>
-  ))}
-</Grid>
-
+      {/* Red Tokens Display */}
+      <Grid container spacing={2} sx={{ marginTop: 2, marginBottom: 2 }}>
+        {redTokensDisplay.map((token, index) => (
+          <Grid
+            item
+            xs={12 / redPerRow}
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            key={index}
+          >
+            <Paper
+              sx={{
+                backgroundColor: token.color,
+                color: '#000',
+                padding: 2,
+                textAlign: 'center',
+                borderRadius: '8px',
+                width: '100px',
+                height: '100px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                boxSizing: 'border-box',
+              }}
+            >
+              {token.label}
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
     </Container>
   );
 }
